@@ -389,39 +389,38 @@ document.addEventListener('readystatechange', function () {
     }
 
     function applyProgress(value) {
-        var progress = value < 0 ? 0 : value > 100 ? 100 : value;
-        var shown = Math.round(progress);
-        var i;
-
-        if (shown === lastPct && progress < 100) return;
-        lastPct = shown;
-        pctEl.textContent = shown + '%';
-
-        if (progress >= 100) {
-            for (i = 0; i < paths.length; i++) {
-                paths[i].setAttribute('stroke-dasharray', '1 0');
-            }
-            ringFull.setAttribute('opacity', '1');
-            return;
-        }
-
-        ringFull.setAttribute('opacity', '0');
+    var progress = value < 0 ? 0 : value > 100 ? 100 : value;
+    var shown = Math.round(progress);
+    var i;
+    if (shown === lastPct && progress < 100) return;
+    lastPct = shown;
+    if (pctEl) pctEl.textContent = shown + '%';
+    if (progress >= 100) {
         for (i = 0; i < paths.length; i++) {
-            paths[i].setAttribute('stroke-dasharray', (shown / 100).toFixed(3) + ' 1');
+            paths[i].setAttribute('stroke-dasharray', '1 0');
         }
+        if (ringFull) ringFull.setAttribute('opacity', '1');
+        return;
     }
+    if (ringFull) ringFull.setAttribute('opacity', '0');
+    for (i = 0; i < paths.length; i++) {
+        paths[i].setAttribute('stroke-dasharray', (shown / 100).toFixed(3) + ' 1');
+    }
+}
 
     function finish() {
-        if (timer) {
-            window.clearTimeout(timer);
-            timer = 0;
-        }
-        applyProgress(100);
-        if (!hopArmed) {
-            hopArmed = true;
-            timer = window.setTimeout(_runHop, HOP_DELAY);
-        }
+    if (timer) {
+        window.clearTimeout(timer);
+        timer = 0;
     }
+    try {
+        applyProgress(100);
+    } catch (e) {}
+    if (!hopArmed) {
+        hopArmed = true;
+        timer = window.setTimeout(_runHop, HOP_DELAY);
+    }
+}
 
     function step() {
         var t = (performance.now() - started) / DURATION;
